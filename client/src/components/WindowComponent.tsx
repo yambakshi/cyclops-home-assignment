@@ -44,9 +44,9 @@ export function WindowComponent({ config }: { config: WindowConfig }) {
             clientIds.push(clientId);
             const url = `${endpoint}?clientId=${clientId}`;
             const { data } = await axios.get(url);
-            setOutput(`${output}${timestamp} - ${data}\n`);
+            setOutput(`${timestamp} - ${data}\n${output}`);
         } catch (e: any) {
-            setOutput(`${output}${timestamp} - ${e.message}\n`);
+            setOutput(`${timestamp} - ${e.message}\n${output}`);
         }
     }
 
@@ -65,10 +65,10 @@ export function WindowComponent({ config }: { config: WindowConfig }) {
                     setClientIds(e.target.value.split(','));
                 }}
                 sx={{ input: { color: '#fff' } }} />
-            <Button variant="contained" style={{ fontSize: '20px', marginTop: '20px' }} onClick={() => setOutput('')}>
+            <Button variant="contained" style={{ fontSize: '20px', margin: '20px 0px' }} onClick={() => setOutput('')}>
                 Clear Output
             </Button>
-            <p className="window-output">{output}</p>
+            <div className="window-output">{output}</div>
         </div>
     );
 }

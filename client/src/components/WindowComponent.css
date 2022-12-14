@@ -11,4 +11,13 @@
     border: 1px #fff solid;
     padding: 10px;
     border-radius: 8px;
+    overflow: scroll;
+    height: 100%;
+
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.window-output::-webkit-scrollbar {
+    display: none;
 }
