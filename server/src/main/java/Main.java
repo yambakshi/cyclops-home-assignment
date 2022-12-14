@@ -1,15 +1,17 @@
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Date;
+import java.util.concurrent.*;
 
 import static spark.Spark.*;
 
 public class Main {
     public static void main(String[] args) {
-//        StaticWindowHandler staticWindowHandler = new StaticWindowHandler();
-//        DynamicWindowHandler dynamicWindowHandler = new DynamicWindowHandler();
-//        Thread staticWindowThread = new Thread(staticWindowHandler, "staticWindowThread");
-//        Thread dynamicWindowThread = new Thread(dynamicWindowHandler, "dynamicWindowThread");
-        ConcurrentHashMap<String, ArrayList<Long>> clientsRequests = new ConcurrentHashMap<>();
+        // Get ExecutorService from Executors utility class, thread pool size is 10
+        // ExecutorService executor = Executors.newFixedThreadPool(5);
+        ThreadPoolExecutor executor
+                = new ThreadPoolExecutor(50, 50, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        executor.allowCoreThreadTimeOut(true);
+        StaticWindowHandler staticWindowHandler = new StaticWindowHandler();
+        DynamicWindowHandler dynamicWindowHandler = new DynamicWindowHandler();
 
         port(8080);
 
@@ -19,46 +21,33 @@ public class Main {
         });
 
         get("/StaticWindow", "application/json", (req, res) -> {
-//            staticWindowThread.start();
-
+            System.out.println(new Date() + " - Received static window request");
             String clientId = req.queryParams("clientId");
             Long currentTimestamp = System.currentTimeMillis() / 1000;
-            ArrayList<Long> clientRequestsCount = clientsRequests.computeIfAbsent(clientId, k -> new ArrayList<>());
-
-            // If less than 5 requests' timestamps were stored
-            int requestsSize = clientRequestsCount.size();
-            if (requestsSize < 5) {
-
-                // If more than 5 secs have passed since the first request
-                if (requestsSize > 0 && currentTimestamp - clientRequestsCount.get(0) > 5) {
-                    clientRequestsCount.clear();
-                }
-
-                clientRequestsCount.add(currentTimestamp);
-            } else { // In the 6th request
-
-                // If more than 5 secs have passed since the first request
-                if (currentTimestamp - clientRequestsCount.get(0) > 5) {
-                    clientRequestsCount.clear();
-                    clientRequestsCount.add(currentTimestamp);
-                } else {
-                    res.status(503);
-                    return "Service Unavailable";
-
-                }
+            boolean shouldExecute = staticWindowHandler.verifyClientRequests(clientId, currentTimestamp);
+            if (shouldExecute) {
+                executor.submit(staticWindowHandler);
+            } else {
+                res.status(503);
+                return "Service Unavailable";
             }
 
-            return "Static World for client " + clientId;
+            return "Successful static window request " + clientId;
         });
 
         get("/DynamicWindow", (req, res) -> {
-//            dynamicWindowThread.start();
-
+            System.out.println(new Date() + " - Received dynamic window request");
             String clientId = req.queryParams("clientId");
             Long currentTimestamp = System.currentTimeMillis() / 1000;
-            ArrayList<Long> clientRequestsCount = clientsRequests.computeIfAbsent(clientId, k -> new ArrayList<>());
+            boolean shouldExecute = dynamicWindowHandler.verifyClientRequests(clientId, currentTimestamp);
+            if (shouldExecute) {
+                executor.submit(dynamicWindowHandler);
+            } else {
+                res.status(503);
+                return "Service Unavailable";
+            }
 
-            return "Dynamic World for client " + clientId;
+            return "Successful dynamic window request " + clientId;
         });
     }
 }

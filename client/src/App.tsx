@@ -1,32 +1,25 @@
 import './App.css';
-import { Button } from '@mui/material';
-import axios from 'axios';
+import { WindowComponent } from './components/WindowComponent';
 
 
 function App() {
-  const handleStaticWindowClick = async () => {
-    try {
-      const response = await axios.get('http://localhost:8080/StaticWindow?clientId=1');
-    } catch (e) {
-      console.log(e);
+  const windowsConfigs = {
+    static: {
+      name: 'Static Window',
+      endpoint: 'http://localhost:8080/StaticWindow'
+    },
+    dynamic: {
+      name: 'Dynamic Window',
+      endpoint: 'http://localhost:8080/DynamicWindow'
     }
   }
-
-  const handleDynamicWindowClick = async () => {
-    try {
-      const response = await axios.get('/DynamicWindow?clientId=1');
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <Button variant="contained" onClick={handleStaticWindowClick}>Static Window</Button>
-        <Button variant="contained" onClick={handleDynamicWindowClick}>Dynamic Window</Button>
-      </header>
+    <div className="app-container">
+      <div className="windows-container">
+        <WindowComponent config={windowsConfigs.static}></WindowComponent>
+        <WindowComponent config={windowsConfigs.dynamic}></WindowComponent>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,14 @@
+.window-container {
+    width: 50vw;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+}
+  
+.window-output {
+    white-space: pre;
+    font-size: 20px;
+    border: 1px #fff solid;
+    padding: 10px;
+    border-radius: 8px;
+}
