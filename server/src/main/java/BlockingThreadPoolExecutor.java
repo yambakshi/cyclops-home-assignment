@@ -1,15 +1,15 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.concurrent.*;
 
 public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
-    private final Semaphore semaphore;
     DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    ConcurrentHashMap<String, ArrayList<Long>> clientsRequests = new ConcurrentHashMap<>();
 
     public BlockingThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
                                       TimeUnit unit, BlockingQueue<Runnable> workQueue) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, new ThreadPoolExecutor.AbortPolicy());
-        semaphore = new Semaphore(corePoolSize);
     }
 
     @Override
@@ -22,25 +22,33 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
 
     @Override
     public void execute(final Runnable task) {
-        boolean acquired = false;
+        String clientId = ((StaticWindowTask)task).getClientId();
+        Long requestTimestamp = ((StaticWindowTask)task).getRequestTimestamp();
+        ArrayList<Long> clientRequestsCount = this.clientsRequests.computeIfAbsent(clientId, k -> new ArrayList<>());
+        int requestsSize = clientRequestsCount.size();
 
-        do {
-            try {
-                semaphore.acquire();
-                acquired = true;
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
+        // If less than 5 requests' timestamps were stored
+        if (requestsSize < 5) {
+
+            // If it's not the start-timeframe request
+            // and more than 5 secs have passed since the first request
+            if (requestsSize > 0 && requestTimestamp - clientRequestsCount.get(0) > 5) {
+                clientRequestsCount.clear();
             }
-        } while (!acquired);
 
-        try {
-            super.execute(task);
-        } catch (final RejectedExecutionException e) {
-            System.out.println("Task Rejected");
-            semaphore.release();
-            throw e;
+            clientRequestsCount.add(requestTimestamp);
+        } else { // 5 requests' timestamps or more are already stored it means it's the 6th or more request
+
+            // If more than 5 secs have passed since the first request
+            if (requestTimestamp - clientRequestsCount.get(0) > 5) {
+                clientRequestsCount.clear();
+                clientRequestsCount.add(requestTimestamp);
+            } else {
+                throw new RejectedExecutionException("Client ID: '" + clientId + "' Exceeded rate limit of 5 requests in 5 seconds");
+            }
         }
-        semaphore.release();
+
+        super.execute(task);
     }
 
     @Override

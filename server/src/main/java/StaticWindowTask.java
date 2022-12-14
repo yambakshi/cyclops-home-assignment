@@ -1,25 +1,38 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.Callable;
 
-public class StaticWindowTask implements Callable<String> {
+public class StaticWindowTask implements Runnable {
     String clientId;
+    Long requestTimestamp;
     DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-    public StaticWindowTask(String clientId) {
+    public StaticWindowTask(String clientId, Long currentTimestamp) {
         this.clientId = clientId;
+        this.requestTimestamp = currentTimestamp;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public Long getRequestTimestamp() {
+        return this.requestTimestamp;
     }
 
     @Override
-    public String call() throws Exception {
-        String threadName = Thread.currentThread().getName();
+    public void run() {
         String timestamp = this.timestampFormat.format(LocalDateTime.now());
+        String threadName = Thread.currentThread().getName();
 
-        System.out.println(timestamp + " Processing static window request for client ID '" + this.clientId + "' in thread " + threadName + "...");
-        Thread.sleep(1000);
-        System.out.println(timestamp + " Finished processing static window in thread " + threadName + " for client ID '" + this.clientId + "'");
+        try {
+            System.out.println(timestamp + " - Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Processing request...");
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            timestamp = this.timestampFormat.format(LocalDateTime.now());
+            System.out.println(timestamp + " - Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Thread was interrupted");
+        }
 
-        // return the thread name executing this callable task
-        return Thread.currentThread().getName();
+        timestamp = this.timestampFormat.format(LocalDateTime.now());
+        System.out.println(timestamp + " - Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Finished processing static window in thread ");
     }
 }

@@ -1,6 +1,3 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +9,7 @@ import static spark.Spark.get;
 public class Main {
     public static void main(String[] args) {
         DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        BlockingQueue<Runnable> staticBlockingQueue = new SynchronousQueue<>();
+        BlockingQueue<Runnable> staticBlockingQueue = new LinkedBlockingQueue<>();
         BlockingThreadPoolExecutor staticExecutor = new BlockingThreadPoolExecutor(5, 5, 0, TimeUnit.SECONDS, staticBlockingQueue);
         staticExecutor.prestartAllCoreThreads();
 
@@ -24,16 +21,18 @@ public class Main {
             try {
                 String timestamp = timestampFormat.format(LocalDateTime.now());
                 String clientId = req.queryParams("clientId");
+                Long currentTimestamp = System.currentTimeMillis() / 1000;
                 System.out.println(timestamp + " - Static Window - Client ID: '"  + clientId +  "' - Received static window request");
 
-                staticExecutor.execute(new StaticWindowHandler(clientId));
+                staticExecutor.execute(new StaticWindowTask(clientId, currentTimestamp));
 
                 return "Successfully served static window request " + clientId;
 
             } catch(RejectedExecutionException e) {
-                System.out.println(e.getMessage());
+                String errorMessage = e.getMessage();
+                System.out.println(errorMessage);
                 res.status(503);
-                return "Service Unavailable";
+                return errorMessage;
             }
         });
 

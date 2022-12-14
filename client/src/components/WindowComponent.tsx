@@ -46,7 +46,7 @@ export function WindowComponent({ config }: { config: WindowConfig }) {
             const { data } = await axios.get(url);
             setOutput(`${timestamp} - ${data}\n${output}`);
         } catch (e: any) {
-            setOutput(`${timestamp} - ${e.message}\n${output}`);
+            setOutput(`${timestamp} - ${e.response.data}\n${output}`);
         }
     }
 
