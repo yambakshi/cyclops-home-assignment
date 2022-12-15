@@ -21,7 +21,6 @@ public class StaticWindowTask implements Runnable {
 
     @Override
     public void run() {
-//        String timestamp = this.timestampFormat.format(LocalDateTime.now());
         String threadName = Thread.currentThread().getName();
 
         try {

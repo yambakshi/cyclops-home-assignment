@@ -1,29 +1,40 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DynamicWindowTask implements Runnable {
+    private static final Logger logger = LogManager.getLogger();
+    String clientId;
+    Long requestTimestamp;
 
     ConcurrentHashMap<String, ArrayList<Long>> clientsRequests = new ConcurrentHashMap<>();
 
-    public boolean verifyClientsRequests(String clientId, Long currentTimestamp) {
-        ArrayList<Long> clientRequestsCount = this.clientsRequests.computeIfAbsent(clientId, k -> new ArrayList<>());
+    public DynamicWindowTask(String clientId, Long currentTimestamp) {
+        this.clientId = clientId;
+        this.requestTimestamp = currentTimestamp;
+    }
 
+    public String getClientId() {
+        return clientId;
+    }
 
-
-        return true;
+    public Long getRequestTimestamp() {
+        return this.requestTimestamp;
     }
 
     @Override
     public void run() {
         String threadName = Thread.currentThread().getName();
+
         try {
-            System.out.println(new Date() + " Processing static window request in thread " + threadName + "...");
+            logger.info("Dynamic Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Processing request...");
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            System.out.println(new Date() + "Thread " + threadName + " was interrupted");
+            logger.error("Dynamic Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Thread was interrupted");
         }
 
-        System.out.println(new Date() + " Finished processing in thread " + threadName);
+        logger.info("Dynamic Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Finished processing static window in thread");
     }
 }

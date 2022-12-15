@@ -3,12 +3,12 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
-public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
+public class StaticThreadPoolExecutor extends ThreadPoolExecutor {
     private static final Logger logger = LogManager.getLogger();
     ConcurrentHashMap<String, ArrayList<Long>> clientsRequests = new ConcurrentHashMap<>();
 
-    public BlockingThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
-                                      TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+    public StaticThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
+                                    TimeUnit unit, BlockingQueue<Runnable> workQueue) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, new ThreadPoolExecutor.AbortPolicy());
     }
 

@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         BlockingQueue<Runnable> staticBlockingQueue = new LinkedBlockingQueue<>();
-        BlockingThreadPoolExecutor staticExecutor = new BlockingThreadPoolExecutor(5, 5, 0, TimeUnit.SECONDS, staticBlockingQueue);
+        StaticThreadPoolExecutor staticExecutor = new StaticThreadPoolExecutor(5, 5, 0, TimeUnit.SECONDS, staticBlockingQueue);
         staticExecutor.prestartAllCoreThreads();
 
         configSpark();
