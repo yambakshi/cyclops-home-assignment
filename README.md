@@ -49,3 +49,7 @@ https://spark.apache.org/docs/latest/#:~:text=Spark%20runs%20on%20Java%208,that%
 
 THREAD Pool
 https://stackoverflow.com/questions/33675139/how-to-handle-n-requests-in-multi-threading
+
+
+RABBITMQ
+https://www.rabbitmq.com/tutorials/tutorial-one-java.html

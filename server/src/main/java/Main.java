@@ -26,7 +26,7 @@ public class Main {
 
                 staticExecutor.execute(new StaticWindowTask(clientId, currentTimestamp));
 
-                return "Successfully served static window request " + clientId;
+                return "Client ID: '" + clientId + "' Successfully served static window request";
 
             } catch(RejectedExecutionException e) {
                 String errorMessage = e.getMessage();
@@ -40,7 +40,7 @@ public class Main {
             System.out.println(new Date() + " - Received dynamic window request");
             String clientId = req.queryParams("clientId");
 
-            return "Successfully served dynamic window request " + clientId;
+            return "Client ID: '" + clientId + "' Successfully served dynamic window request";
         });
 
         get("/exit", "application/json", (req, res) -> {
@@ -52,8 +52,8 @@ public class Main {
                 System.out.println(e.getMessage());
             }
 
-            System.exit(0);
             return "Successfully served exit request";
+            // System.exit(0);
         });
     }
 
