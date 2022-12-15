@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DynamicWindowHandler implements Runnable {
+public class DynamicWindowTask implements Runnable {
 
     ConcurrentHashMap<String, ArrayList<Long>> clientsRequests = new ConcurrentHashMap<>();
 

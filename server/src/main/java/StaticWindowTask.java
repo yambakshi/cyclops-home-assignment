@@ -1,10 +1,10 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class StaticWindowTask implements Runnable {
+    private static final Logger logger = LogManager.getLogger();
     String clientId;
     Long requestTimestamp;
-    DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     public StaticWindowTask(String clientId, Long currentTimestamp) {
         this.clientId = clientId;
@@ -21,18 +21,16 @@ public class StaticWindowTask implements Runnable {
 
     @Override
     public void run() {
-        String timestamp = this.timestampFormat.format(LocalDateTime.now());
+//        String timestamp = this.timestampFormat.format(LocalDateTime.now());
         String threadName = Thread.currentThread().getName();
 
         try {
-            System.out.println(timestamp + " - Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Processing request...");
+            logger.info("Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Processing request...");
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            timestamp = this.timestampFormat.format(LocalDateTime.now());
-            System.out.println(timestamp + " - Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Thread was interrupted");
+            logger.error("Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Thread was interrupted");
         }
 
-        timestamp = this.timestampFormat.format(LocalDateTime.now());
-        System.out.println(timestamp + " - Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Finished processing static window in thread ");
+        logger.info("Static Window - Client ID: '"  + this.clientId + "' - '" + threadName + "' - Finished processing static window in thread");
     }
 }

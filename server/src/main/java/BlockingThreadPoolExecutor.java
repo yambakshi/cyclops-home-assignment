@@ -1,10 +1,10 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
 public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
-    DateTimeFormatter timestampFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    private static final Logger logger = LogManager.getLogger();
     ConcurrentHashMap<String, ArrayList<Long>> clientsRequests = new ConcurrentHashMap<>();
 
     public BlockingThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
@@ -16,8 +16,7 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     protected void beforeExecute(Thread t, Runnable r) {
         super.beforeExecute(t, r);
         String threadName = Thread.currentThread().getName();
-        String timestamp = this.timestampFormat.format(LocalDateTime.now());
-        System.out.println(timestamp + " - Static Window - '"  + threadName + "' - Performing beforeExecute() logic...");
+        logger.info("Static Window - '"  + threadName + "' - Performing beforeExecute() logic...");
     }
 
     @Override
@@ -54,14 +53,13 @@ public class BlockingThreadPoolExecutor extends ThreadPoolExecutor {
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
         super.afterExecute(r, t);
-        String timestamp = this.timestampFormat.format(LocalDateTime.now());
         String threadName = Thread.currentThread().getName();
 
         if (t != null) {
-            System.out.println(timestamp + " - Static Window - '"  + threadName + " - Performing exception handler logic...");
+            logger.info("Static Window - '"  + threadName + " - Performing exception handler logic...");
             t.printStackTrace();
         }
 
-        System.out.println(timestamp + " - Static Window - '"  + threadName + "' - Performing afterExecute() logic...");
+        logger.info("Static Window - '"  + threadName + "' - Performing afterExecute() logic...");
     }
 }
