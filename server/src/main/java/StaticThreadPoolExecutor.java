@@ -30,15 +30,15 @@ public class StaticThreadPoolExecutor extends ThreadPoolExecutor {
         if (requestsSize < 5) {
 
             // If it's not the start-timeframe request
-            // and more than 5 secs have passed since the first request
+            // and more than 5 secs have passed since the start-timeframe request
             if (requestsSize > 0 && requestTimestamp - clientRequestsCount.get(0) > 5) {
                 clientRequestsCount.clear();
             }
 
             clientRequestsCount.add(requestTimestamp);
-        } else { // 5 requests' timestamps or more are already stored it means it's the 6th or more request
+        } else { // 5 requests' timestamps or more are already stored (which means it's the 6th or more request)
 
-            // If more than 5 secs have passed since the first request
+            // If more than 5 secs have passed since the start-timeframe request
             if (requestTimestamp - clientRequestsCount.get(0) > 5) {
                 clientRequestsCount.clear();
                 clientRequestsCount.add(requestTimestamp);

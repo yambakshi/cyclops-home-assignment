@@ -2,6 +2,7 @@
 
 ## Technologies
 - Java SE Development Kit 17.0.5 (64-bit)
+- Spark 2.9.4
 
 ## Java
 ### Basics
@@ -145,3 +146,17 @@
 ### Basics
 #### Links
 - [RabbitMQ - Introduction](https://www.rabbitmq.com/tutorials/tutorial-one-java.html)
+
+## Log4J
+### Basics
+#### Links
+- [Welcome to Log4j 2!](https://logging.apache.org/log4j/2.x/manual/index.html)
+- [Maven, Ivy, Gradle, and SBT Artifacts](https://logging.apache.org/log4j/2.x/maven-artifacts.html)
+- [Apache Log4j™ 2](https://logging.apache.org/log4j/2.x/index.html)
+- [Log4j 2 API](https://logging.apache.org/log4j/2.x/manual/api.html)
+- [Migrating from Log4j 1.x to 2.x](https://logging.apache.org/log4j/2.x/manual/migration.html#ConfigurationCompatibility)
+- [Log4j Maven](https://www.javatpoint.com/log4j-maven)
+- [Configuration](https://logging.apache.org/log4j/2.x/manual/configuration.html)
+- [Where should I put the log4j.properties file?](https://stackoverflow.com/questions/1485987/where-should-i-put-the-log4j-properties-file)
+- [Logger in Java - Java Logging Example](https://www.digitalocean.com/community/tutorials/logger-in-java-logging-example)
+- [What is logger in Java and why do you use it?](https://www.edureka.co/blog/logger-in-java) 
