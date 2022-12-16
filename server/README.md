@@ -44,6 +44,11 @@
    ```
    C:\Users\<user_name>\.m2
    ```
+   
+3. `Maven` settings on `Windows 10`
+   ```agsl
+   C:\Program Files\Maven\apache-maven-3.8.6\conf\settings.xml
+   ```
 
 ### IntelliJ Integration
 #### Links
