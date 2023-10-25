@@ -1,5 +1,9 @@
 # Getting Started with Create React App
 
+## Technologies
+- NodeJS `14.21.3`
+- NPM `6.14.18`
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
